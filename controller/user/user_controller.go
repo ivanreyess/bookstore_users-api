@@ -1,29 +1,33 @@
 package user
 
 import (
-	"encoding/json"
-	"fmt"
+	"net/http"
+
+	"github.com/ivanreyess/bookstore_users-api/utils/errors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ivanreyess/bookstore_users-api/model/user"
-	"io/ioutil"
-	"net/http"
+	"github.com/ivanreyess/bookstore_users-api/service"
 )
 
+//GetUser get a user given its ID
 func GetUser(c *gin.Context) {
+
 	c.String(http.StatusNotImplemented, "implement me!")
 }
 
+//CreateUser create a new user
 func CreateUser(c *gin.Context) {
 	var u user.User
-	fmt.Println(u)
-	bytes, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
-		c.String(http.StatusInternalServerError, "could not read user")
+	if err := c.ShouldBindJSON(&u); err != nil {
+		restErr := errors.NewBadRequestError("invalid json body")
+		c.JSON(restErr.Status, restErr)
+		return
 	}
-	err = json.Unmarshal(bytes, &u)
-	if err != nil {
-		c.String(http.StatusInternalServerError, "could not unmarshal user")
+	result, saveErr := service.CreateUser(u)
+	if saveErr != nil {
+		c.JSON(saveErr.Status, saveErr)
+		return
 	}
-	fmt.Println(err)
-	c.String(http.StatusNotImplemented, "implement me!")
+	c.JSON(http.StatusCreated, result)
 }

@@ -3,18 +3,20 @@ package server
 import (
 	"context"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 var (
 	router = gin.Default()
 )
 
+//StartGinApplication start a web server based on gin framework
 func StartGinApplication() {
 	mapUrls()
 	s := http.Server{
