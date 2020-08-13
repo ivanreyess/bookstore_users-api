@@ -10,5 +10,17 @@ func CreateUser(u user.User) (*user.User, *errors.RestErr) {
 	if err := u.Validate(); err != nil {
 		return nil, err
 	}
+	if err := u.Save(); err != nil {
+		return nil, err
+	}
 	return &u, nil
+}
+
+//GetUser return an user given its ID
+func GetUser(userID int64) (*user.User, *errors.RestErr) {
+	if userID <= 0 {
+		return nil, errors.NewBadRequestError("ID must be greater than 0")
+	}
+	u := user.User{ID: userID}
+	return u.Get()
 }

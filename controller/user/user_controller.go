@@ -2,6 +2,7 @@ package user
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/ivanreyess/bookstore_users-api/utils/errors"
 
@@ -12,8 +13,18 @@ import (
 
 //GetUser get a user given its ID
 func GetUser(c *gin.Context) {
-
-	c.String(http.StatusNotImplemented, "implement me!")
+	userID, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	if err != nil {
+		err := errors.NewBadRequestError("user ID should be a number")
+		c.JSON(err.Status, err)
+		return
+	}
+	u, userErr := service.GetUser(userID)
+	if userErr != nil {
+		c.JSON(userErr.Status, userErr)
+		return
+	}
+	c.JSON(http.StatusOK, u)
 }
 
 //CreateUser create a new user
