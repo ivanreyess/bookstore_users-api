@@ -6,6 +6,9 @@ import (
 )
 
 //CreateUser creates a new user reference
-func CreateUser(user user.User) (*user.User, *errors.RestErr) {
-	return &user, nil
+func CreateUser(u user.User) (*user.User, *errors.RestErr) {
+	if err := u.Validate(); err != nil {
+		return nil, err
+	}
+	return &u, nil
 }
