@@ -11,6 +11,8 @@ const (
 	queryInsertUser  = "INSERT INTO user(first_name, last_name, email, date_created) VALUES(?,?,?,?)"
 	indexEmailUnique = "email_UNIQUE"
 	queryGetUser     = "SELECT u.id, u.first_name, u.last_name, u.email, u.date_created FROM user u WHERE u.id=?"
+	queryUpdateUser  = "UPDATE user SET first_name=?, last_name=?, email=? WHERE id=?"
+	queryDeleteUser  = "DELETE FROM user WHERE id=?"
 	errorNoRows      = "no rows in result set"
 )
 
@@ -48,5 +50,33 @@ func (u *User) Save() *errors.RestErr {
 		return mysqlutils.ParseError(err)
 	}
 	u.ID = userID
+	return nil
+}
+
+//Update user in database
+func (u *User) Update() *errors.RestErr {
+	stmt, err := userdb.Client.Prepare(queryUpdateUser)
+	if err != nil {
+		return errors.NewInternalServerError(err.Error())
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(u.FirstName, u.LastName, u.Email, u.ID)
+	if err != nil {
+		return mysqlutils.ParseError(err)
+	}
+	return nil
+}
+
+//Delete user in database
+func (u *User) Delete() *errors.RestErr {
+	stmt, err := userdb.Client.Prepare(queryDeleteUser)
+	if err != nil {
+		return errors.NewInternalServerError(err.Error())
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(u.ID)
+	if err != nil {
+		return mysqlutils.ParseError(err)
+	}
 	return nil
 }

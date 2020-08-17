@@ -19,7 +19,7 @@ func ParseError(err error) *errors.RestErr {
 		if strings.Contains(err.Error(), errorNoRows) {
 			return errors.NewNotFoundError("no record matching given ID")
 		}
-		return errors.NewInternalServerError("error parsing databse response")
+		return errors.NewInternalServerError("error parsing database response")
 	}
 	switch sqlErr.Number {
 	case 1062:
