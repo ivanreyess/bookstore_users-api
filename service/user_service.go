@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/ivanreyess/bookstore_users-api/model/user"
+	"github.com/ivanreyess/bookstore_users-api/utils/cryptoutils"
 	"github.com/ivanreyess/bookstore_users-api/utils/dateutils"
 	"github.com/ivanreyess/bookstore_users-api/utils/errors"
 )
@@ -13,6 +14,7 @@ func CreateUser(u user.User) (*user.User, *errors.RestErr) {
 	}
 	u.DateCreated = dateutils.GetNowDBFormat()
 	u.Status = user.StatusActive
+	u.Password = cryptoutils.GetMD5(u.Password)
 	if err := u.Save(); err != nil {
 		return nil, err
 	}
