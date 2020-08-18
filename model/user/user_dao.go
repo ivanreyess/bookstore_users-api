@@ -16,9 +16,6 @@ const (
 
 //Get a single user given its ID
 func (u *User) Get() (*User, *errors.RestErr) {
-	if err := userdb.Client.Ping(); err != nil {
-		panic(err)
-	}
 	stmt, err := userdb.Client.Prepare(queryGetUser)
 	if err != nil {
 		return nil, mysqlutils.ParseError(err)
