@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/ivanreyess/bookstore_users-api/model/user"
+	"github.com/ivanreyess/bookstore_users-api/domain/user"
 	"github.com/ivanreyess/bookstore_users-api/utils/cryptoutils"
 	"github.com/ivanreyess/bookstore_users-api/utils/dateutils"
 	"github.com/ivanreyess/bookstore_users-api/utils/errors"
@@ -70,7 +70,7 @@ func DeleteUser(userID int64) *errors.RestErr {
 }
 
 //Search retrieve users given the status
-func Search(status string) ([]user.User, *errors.RestErr) {
+func Search(status string) (user.Users, *errors.RestErr) {
 	dao := &user.User{}
 	return dao.FindByStatus(status)
 }

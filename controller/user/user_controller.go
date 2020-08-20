@@ -7,7 +7,7 @@ import (
 	"github.com/ivanreyess/bookstore_users-api/utils/errors"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ivanreyess/bookstore_users-api/model/user"
+	"github.com/ivanreyess/bookstore_users-api/domain/user"
 	"github.com/ivanreyess/bookstore_users-api/service"
 )
 
@@ -33,7 +33,7 @@ func Get(c *gin.Context) {
 		c.JSON(userErr.Status, userErr)
 		return
 	}
-	c.JSON(http.StatusOK, u)
+	c.JSON(http.StatusOK, u.Marshal(c.GetHeader("X-Public") == "true"))
 }
 
 //Create create a new user
@@ -49,7 +49,7 @@ func Create(c *gin.Context) {
 		c.JSON(saveErr.Status, saveErr)
 		return
 	}
-	c.JSON(http.StatusCreated, result)
+	c.JSON(http.StatusCreated, result.Marshal(c.GetHeader("X-Public") == "true"))
 }
 
 //Update update a new user with a given ID
@@ -74,7 +74,7 @@ func Update(c *gin.Context) {
 		c.JSON(updateErr.Status, updateErr)
 		return
 	}
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, result.Marshal(c.GetHeader("X-Public") == "true"))
 }
 
 //Delete remove user with a given ID
@@ -89,16 +89,16 @@ func Delete(c *gin.Context) {
 		c.JSON(userErr.Status, userErr)
 		return
 	}
-	c.JSON(http.StatusOK, map[string] string{"status": "deleted"})
+	c.JSON(http.StatusOK, map[string]string{"status": "deleted"})
 }
 
 //Search get all users by a given status
-func Search(c *gin.Context){
+func Search(c *gin.Context) {
 	status := c.Query("status")
 	users, err := service.Search(status)
-	if err !=nil{
+	if err != nil {
 		c.JSON(err.Status, err)
 		return
 	}
-	c.JSON(http.StatusOK, users)
+	c.JSON(http.StatusOK, users.Marshal(c.GetHeader("X-Public") == "true"))
 }
