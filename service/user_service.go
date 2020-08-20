@@ -2,6 +2,8 @@ package service
 
 import (
 	"github.com/ivanreyess/bookstore_users-api/model/user"
+	"github.com/ivanreyess/bookstore_users-api/utils/cryptoutils"
+	"github.com/ivanreyess/bookstore_users-api/utils/dateutils"
 	"github.com/ivanreyess/bookstore_users-api/utils/errors"
 )
 
@@ -10,6 +12,9 @@ func CreateUser(u user.User) (*user.User, *errors.RestErr) {
 	if err := u.Validate(); err != nil {
 		return nil, err
 	}
+	u.DateCreated = dateutils.GetNowDBFormat()
+	u.Status = user.StatusActive
+	u.Password = cryptoutils.GetMD5(u.Password)
 	if err := u.Save(); err != nil {
 		return nil, err
 	}
@@ -62,4 +67,10 @@ func UpdateUser(isPartial bool, u user.User) (*user.User, *errors.RestErr) {
 func DeleteUser(userID int64) *errors.RestErr {
 	user := &user.User{ID: userID}
 	return user.Delete()
+}
+
+//Search retrieve users given the status
+func Search(status string) ([]user.User, *errors.RestErr) {
+	dao := &user.User{}
+	return dao.FindByStatus(status)
 }

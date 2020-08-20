@@ -4,9 +4,12 @@ CREATE TABLE `user` (
 	`last_name` VARCHAR(50) NULL DEFAULT NULL,
 	`email` VARCHAR(50) NULL DEFAULT NULL,
 	`date_created` VARCHAR(50) NULL DEFAULT NULL,
+	`status` VARCHAR(50) NOT NULL,
+	`password` VARCHAR(50) NOT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `email_UNIQUE` (`email`)
 )
 COLLATE='utf8mb4_0900_ai_ci'
 ENGINE=InnoDB
+AUTO_INCREMENT=7
 ;
