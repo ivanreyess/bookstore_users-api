@@ -3,13 +3,13 @@ package server
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/ivanreyess/bookstore_users-api/logger"
 )
 
 var (
@@ -29,11 +29,11 @@ func StartGinApplication() {
 
 	// start the server
 	go func() {
-		fmt.Println("Starting server on port 9090")
+		logger.Info("Starting server on port 9090")
 
 		err := s.ListenAndServe()
 		if err != nil {
-			fmt.Printf("Error starting server: %s\n", err)
+			logger.Error(fmt.Sprintf("Error starting server: %s\n", err))
 			os.Exit(1)
 		}
 	}()
@@ -45,7 +45,7 @@ func StartGinApplication() {
 
 	// Block until a signal is received.
 	sig := <-c
-	log.Println("Got signal:", sig)
+	logger.Info(fmt.Sprintf("Got signal: %v", sig))
 
 	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
 	ctx, cancelFunc := context.WithTimeout(context.Background(), 30*time.Second)
