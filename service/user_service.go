@@ -7,8 +7,24 @@ import (
 	"github.com/ivanreyess/bookstore_users-api/utils/errors"
 )
 
+var (
+	//UserService holds user services functions
+	UserService userServiceInterface = &userService{}
+)
+
+type userService struct {
+}
+
+type userServiceInterface interface {
+	CreateUser(user.User) (*user.User, *errors.RestErr)
+	GetUser(int64) (*user.User, *errors.RestErr)
+	UpdateUser(bool, user.User) (*user.User, *errors.RestErr)
+	DeleteUser(int64) *errors.RestErr
+	SearchUser(string) (user.Users, *errors.RestErr)
+}
+
 //CreateUser creates a new user reference
-func CreateUser(u user.User) (*user.User, *errors.RestErr) {
+func (s *userService) CreateUser(u user.User) (*user.User, *errors.RestErr) {
 	if err := u.Validate(); err != nil {
 		return nil, err
 	}
@@ -22,7 +38,7 @@ func CreateUser(u user.User) (*user.User, *errors.RestErr) {
 }
 
 //GetUser return an user given its ID
-func GetUser(userID int64) (*user.User, *errors.RestErr) {
+func (s *userService) GetUser(userID int64) (*user.User, *errors.RestErr) {
 	if userID <= 0 {
 		return nil, errors.NewBadRequestError("ID must be greater than 0")
 	}
@@ -31,8 +47,8 @@ func GetUser(userID int64) (*user.User, *errors.RestErr) {
 }
 
 //UpdateUser updates user
-func UpdateUser(isPartial bool, u user.User) (*user.User, *errors.RestErr) {
-	current, err := GetUser(u.ID)
+func (s *userService) UpdateUser(isPartial bool, u user.User) (*user.User, *errors.RestErr) {
+	current, err := s.GetUser(u.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -64,13 +80,13 @@ func UpdateUser(isPartial bool, u user.User) (*user.User, *errors.RestErr) {
 }
 
 //DeleteUser remove user
-func DeleteUser(userID int64) *errors.RestErr {
+func (s *userService) DeleteUser(userID int64) *errors.RestErr {
 	user := &user.User{ID: userID}
 	return user.Delete()
 }
 
 //Search retrieve users given the status
-func Search(status string) (user.Users, *errors.RestErr) {
+func (s *userService) SearchUser(status string) (user.Users, *errors.RestErr) {
 	dao := &user.User{}
 	return dao.FindByStatus(status)
 }
