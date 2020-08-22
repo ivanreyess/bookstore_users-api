@@ -37,7 +37,8 @@ func Info(msg string, tags ...zap.Field) {
 }
 
 //Error logs the error message with string message and different tags
-func Error(msg string, tags ...zap.Field) {
+func Error(msg string, err error, tags ...zap.Field) {
+	tags = append(tags, zap.NamedError("error", err))
 	log.Error(msg, tags...)
 	log.Sync()
 }

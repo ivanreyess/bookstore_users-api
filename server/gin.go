@@ -33,7 +33,7 @@ func StartGinApplication() {
 
 		err := s.ListenAndServe()
 		if err != nil {
-			logger.Error(fmt.Sprintf("Error starting server: %s\n", err))
+			logger.Error("Error starting server", err)
 			os.Exit(1)
 		}
 	}()

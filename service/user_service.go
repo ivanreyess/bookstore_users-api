@@ -39,11 +39,11 @@ func (s *userService) CreateUser(u user.User) (*user.User, *errors.RestErr) {
 
 //GetUser return an user given its ID
 func (s *userService) GetUser(userID int64) (*user.User, *errors.RestErr) {
-	if userID <= 0 {
-		return nil, errors.NewBadRequestError("ID must be greater than 0")
+	dao := &user.User{ID: userID}
+	if err := dao.Get(); err != nil {
+		return nil, err
 	}
-	u := user.User{ID: userID}
-	return u.Get()
+	return dao, nil
 }
 
 //UpdateUser updates user

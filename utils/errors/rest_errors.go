@@ -1,6 +1,14 @@
 package errors
 
-import "net/http"
+import (
+	"errors"
+	"net/http"
+)
+
+//NewError returns a new instance of an error
+func NewError(msg string) error {
+	return errors.New(msg)
+}
 
 //RestErr defines common structure for handling error messages
 type RestErr struct {
